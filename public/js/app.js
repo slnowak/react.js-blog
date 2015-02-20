@@ -18,6 +18,21 @@ var CommentBox = React.createClass({
     });
   },
 
+  addNewComment: function(comment) {
+    $.ajax({
+      url: this.props.url,
+      type: 'POST',
+      dataType: 'json',
+      data: comment,
+      success: function() {
+        this.loadComments();
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+
   componentDidMount: function() {
     this.loadComments();
     setInterval(this.loadComments, this.props.pollInterval);
@@ -30,7 +45,7 @@ var CommentBox = React.createClass({
         <CommentList comments={this.state.comments}/>
 
         <br/> <br/>
-        <CommentForm />
+        <CommentForm submitCallback={this.addNewComment}/>
 
       </div>
     );
@@ -57,11 +72,36 @@ var CommentList = React.createClass({
 
 
 var CommentForm = React.createClass({
+  handleSubmit: function(e) {
+    e.preventDefault();
+    var author = this._trimmedValue(this.refs.author);
+    var content = this._trimmedValue(this.refs.content);
+
+    if (author && content) {
+      this.props.submitCallback(
+        {author: author, content: content}
+      );
+      this._clearField(this.refs.author);
+      this._clearField(this.refs.content);
+    }
+
+  },
+
+  _trimmedValue: function(field) {
+    return field.getDOMNode().value.trim();
+  },
+
+  _clearField: function(field) {
+    field.getDOMNode().value = '';
+  },
+
   render: function() {
     return (
-      <div className="commentForm">
-        comment form
-      </div>
+      <form className="commentForm" onSubmit={this.handleSubmit}>
+        <input type="text" placeholder="Type your name" ref="author"/>
+        <input type="text" placeholder="Say something ;)" ref="content"/>
+        <input type="submit" value="Post!"/>
+      </form>
     );
   }
 });
