@@ -25,12 +25,18 @@ var CommentBox = React.createClass({
       dataType: 'json',
       data: comment,
       success: function() {
-        this.loadComments();
+        this._performOptimisticUpdate(comment);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
+  },
+
+  _performOptimisticUpdate: function(comment) {
+    var comments = this.state.comments;
+    var newComments = comments.concat([comment]);
+    this.setState({comments: newComments});
   },
 
   componentDidMount: function() {
