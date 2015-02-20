@@ -46,14 +46,18 @@ var CommentBox = React.createClass({
 
   render: function() {
     return (
-      <div className = "commentBox">
-        <h2>Comments</h2>
-        <CommentList comments={this.state.comments}/>
+        <div className="jumbotron container">
+          <div className="container col-md-6 jumbotron">
+            <div className="page-header container">
+              <h2>Comments</h2>
+            </div>
+            <CommentList comments={this.state.comments}/>
 
-        <br/> <br/>
-        <CommentForm submitCallback={this.addNewComment}/>
+            <br/> <br/>
+            <CommentForm submitCallback={this.addNewComment}/>
+          </div>
+        </div>
 
-      </div>
     );
   }
 });
@@ -62,9 +66,11 @@ var CommentList = React.createClass({
   render: function() {
     var comments = this.props.comments.map(function(comment) {
       return (
-        <Comment author={comment.author}>
-          {comment.content}
-        </Comment>
+        <div className="container">
+          <Comment author={comment.author}>
+            {comment.content}
+          </Comment>
+        </div>
       );
     });
 
@@ -103,11 +109,13 @@ var CommentForm = React.createClass({
 
   render: function() {
     return (
-      <form className="commentForm" onSubmit={this.handleSubmit}>
-        <input type="text" placeholder="Type your name" ref="author"/>
-        <input type="text" placeholder="Say something ;)" ref="content"/>
-        <input type="submit" value="Post!"/>
-      </form>
+      <div className="container">
+        <form className="commentForm" onSubmit={this.handleSubmit}>
+          <input className="form-control" type="text" placeholder="Type your name" ref="author"/>
+          <input className="form-control" type="text" placeholder="Say something ;)" ref="content"/>
+          <input className="form-control" type="submit" value="Post!" className="btn btn-primary btn-lg"/>
+        </form>
+      </div>
     );
   }
 });
@@ -115,7 +123,7 @@ var CommentForm = React.createClass({
 var Comment = React.createClass({
   render: function() {
     return (
-      <div className="comment">
+      <div className="comment bs-callout bs-callout-danger">
         <p className="commentAuthor">
           { this.props.author }
         </p>
